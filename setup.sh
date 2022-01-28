@@ -1,3 +1,3 @@
 #!/bin/bash
 
-ln -s "$(pwd)/nixpkgs" ~/.config/nixpkgs
+ln -s "$(pwd)/nixfiles" ~/.config/nixpkgs
