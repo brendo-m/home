@@ -7,14 +7,22 @@
   home.homeDirectory = "/Users/brendan";
   home.stateVersion = "21.05";
 
-  home.packages = [
-    pkgs.awscli2
-    pkgs.direnv
-    pkgs.git
-    pkgs.htop
-    pkgs.jq
-    pkgs.ripgrep
-    pkgs.tree
+  home.packages = with pkgs; [
+    awscli2
+    bat          # cat replacement written in rust
+    direnv       # per-directory env vars
+    diff-so-fancy # pretty diffs
+    exa          # ls replacement written in rust
+    fd           # find replacement written in rust
+    git
+    gnupg
+    htop         # better version of top
+    httpie       # alternative to curl
+    jq           # json query
+    pinentry_mac # Necessary for GPG
+    ripgrep      # grep replacement written in rust
+    tree         # display directory tree structure
+    wget
   ];
 
   programs.home-manager.enable = true;
