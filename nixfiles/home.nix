@@ -21,6 +21,7 @@
     jq           # json query
     pinentry_mac # Necessary for GPG
     ripgrep      # grep replacement written in rust
+    (callPackage ./scala-cli.nix {})
     tree         # display directory tree structure
     wget
   ];
