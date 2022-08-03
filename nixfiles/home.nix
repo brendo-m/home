@@ -31,48 +31,130 @@ in
     httpie       # alternative to curl
     jq           # json query
     just
+    ngrok        # Expose local HTTP stuff publicly
     pinentry_mac # Necessary for GPG
     ripgrep      # grep replacement written in rust
     rustup
     (callPackage ./scala-cli.nix {})
+    (callPackage ./spin.nix {})
     tree         # display directory tree structure
     wget
 
     # nix related tools
-    direnv       # per directory env vars
-    lorri        # better nix-shell
-    niv
+    # direnv       # per directory env vars
+    # lorri        # better nix-shell
+    # niv
 
     # python
     python
 
     (callPackage ./localstack {})
+
+    nodejs
+    yarn
   ];
+
+  home.file.".vimrc".source = ./vimrc;
 
   programs.home-manager.enable = true;
   programs.direnv.enable = true;
   programs.direnv.nix-direnv.enable = true;
 
+  programs.java = {
+    enable = true; 
+    package = pkgs.jdk17; 
+  };
+
   programs.vim = {
     enable = true;
     plugins = with pkgs.vimPlugins; [ vim-surround vim-sneak vim-airline ];
-    extraConfig = ''
-      syntax on
-      set ruler
-      set number
-      set cursorline
 
-      " Disable Arrow keys in Normal mode
-      map <up> <nop>
-      map <down> <nop>
-      map <left> <nop>
-      map <right> <nop>
+    extraConfig = builtins.readFile ./vimrc;
+  };
 
-      " Disable Arrow keys in Insert mode
-      imap <up> <nop>
-      imap <down> <nop>
-      imap <left> <nop>
-      imap <right> <nop>
+  programs.zsh = {
+    enable = true;
+    shellAliases = {
+      ll = "ls -lah";
+      h = "history";
+      c = "clear";
+
+      ga = "git add";
+      gd = "git diff";
+      gg = "git prettyLog";
+      gs = "git status";
+      gca = "git commit --amend";
+      gl = "git pull";
+      gfa = "git fetch --all";
+
+      pj = "npx projen";
+      pjb = "npx projen build";
+      pjc = "npx projen compile";
+      pjt = "npx projen test";
+      pjw = "npx projen watch";
+
+      crg = "cargo";
+
+      nix-switch = "home-manager switch && . ~/.zshrc";
+    };
+    history = {
+      size = 10000;
+      path = "${config.xdg.dataHome}/zsh/history";
+    };
+  
+    oh-my-zsh = {
+      enable = true;
+      plugins = [ 
+        "git" 
+      ];
+    };
+
+    # https://matthewrhone.dev/nixos-npm-globally
+    initExtra = ''
+    export PATH=$PATH:$HOME/bin
+    export PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
+    export PATH=$PATH:$HOME/.local/bin
+    export PATH=$PATH:$HOME/.cargo/bin
+    export PATH=$PATH:/opt/homebrew/bin
+    export PATH=$PATH:/usr/local/bin
+    export PATH=$PATH:$HOME/.npm-packages/bin
+
+    export NODE_PATH=$HOME/.npm-packages/lib/node_modules
+
+    sso() {
+      unset AWS_PROFILE
+      export AWS_PROFILE=$1
+      aws sts get-caller-identity &> /dev/null || aws sso login || (
+        unset AWS_PROFILE && aws-configure-sso-profile --profile $1
+      )
+      eval $(aws-export-credentials --env-export)
+    }
     '';
+  };
+
+  programs.git = {
+    enable = true;
+    userName  = "Brendan McKee";
+    userEmail = "brendan@functionless.org";
+    aliases = {
+      prettylog = "log --graph --pretty='%Cblue%h%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset -%C(yellow)%d%Creset' --all";
+    };
+    extraConfig = {
+      core.editor = "vim";
+      pull.rebase = true;
+      init.defaultBranch = "main";
+    };
+    delta = {
+      enable = true;
+      options = {
+        navigate = true;
+        line-numbers = true;
+        syntax-theme = "base16";
+      };
+    };
+  };
+
+  programs.vscode = {
+    enable = true;
   };
 }
