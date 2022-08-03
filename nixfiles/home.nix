@@ -35,20 +35,13 @@ in
     pinentry_mac # Necessary for GPG
     ripgrep      # grep replacement written in rust
     rustup
-    (callPackage ./scala-cli.nix {})
-    (callPackage ./spin.nix {})
     tree         # display directory tree structure
     wget
-
-    # nix related tools
-    # direnv       # per directory env vars
-    # lorri        # better nix-shell
-    # niv
 
     # python
     python
 
-    (callPackage ./localstack {})
+    (callPackage ./scala-cli.nix {})
 
     nodejs
     yarn
@@ -135,7 +128,7 @@ in
   programs.git = {
     enable = true;
     userName  = "Brendan McKee";
-    userEmail = "brendan@functionless.org";
+    userEmail = "brendan.mckee@outlook.com";
     aliases = {
       prettylog = "log --graph --pretty='%Cblue%h%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset -%C(yellow)%d%Creset' --all";
     };
